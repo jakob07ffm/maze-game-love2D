@@ -1,12 +1,13 @@
 function love.load()
     love.window.setTitle("Maze Game")
     love.window.setMode(800, 600)
-    
+
     cellSize = 40
     cols = 20
     rows = 15
     player = {x = 1, y = 1}
-    
+    goal = {x = cols, y = rows}
+
     maze = generateMaze(cols, rows)
 end
 
@@ -25,6 +26,11 @@ end
 function love.draw()
     drawMaze(maze)
     drawPlayer()
+    drawGoal()
+    if player.x == goal.x and player.y == goal.y then
+        love.graphics.setColor(0, 1, 0)
+        love.graphics.print("You Win!", 350, 280, 0, 2, 2)
+    end
 end
 
 function generateMaze(cols, rows)
@@ -40,6 +46,7 @@ function generateMaze(cols, rows)
         end
     end
     maze[1][1] = 0
+    maze[rows][cols] = 0
     return maze
 end
 
@@ -59,10 +66,15 @@ function drawPlayer()
     love.graphics.rectangle("fill", (player.x-1) * cellSize, (player.y-1) * cellSize, cellSize, cellSize)
 end
 
+function drawGoal()
+    love.graphics.setColor(0, 0, 1)
+    love.graphics.rectangle("fill", (goal.x-1) * cellSize, (goal.y-1) * cellSize, cellSize, cellSize)
+end
+
 function movePlayer(dx, dy)
     local newX = player.x + dx
     local newY = player.y + dy
-    
+
     if newX > 0 and newX <= cols and newY > 0 and newY <= rows and maze[newY][newX] == 0 then
         player.x = newX
         player.y = newY
