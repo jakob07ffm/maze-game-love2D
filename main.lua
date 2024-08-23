@@ -35,18 +35,58 @@ end
 
 function generateMaze(cols, rows)
     local maze = {}
+    local stack = {}
+
     for y = 1, rows do
         maze[y] = {}
         for x = 1, cols do
-            if x == 1 or y == 1 or x == cols or y == rows then
-                maze[y][x] = 1
-            else
-                maze[y][x] = math.random() > 0.7 and 1 or 0
-            end
+            maze[y][x] = 1 -- Wall
         end
     end
+
+    local currentCell = {x = 1, y = 1}
+    maze[currentCell.y][currentCell.x] = 0
+    table.insert(stack, currentCell)
+
+
+    while #stack > 0 do
+        local cell = stack[#stack]
+        local neighbors = {}
+
+
+        local directions = {
+            {dx = 0, dy = -2}, 
+            {dx = 0, dy = 2},  
+            {dx = -2, dy = 0}, 
+            {dx = 2, dy = 0}  
+        }
+
+        for _, dir in ipairs(directions) do
+            local nx, ny = cell.x + dir.dx, cell.y + dir.dy
+            if nx > 0 and nx <= cols and ny > 0 and ny <= rows and maze[ny][nx] == 1 then
+                table.insert(neighbors, {x = nx, y = ny, dir = dir})
+            end
+        end
+
+        if #neighbors > 0 then
+            local nextCell = neighbors[love.math.random(1, #neighbors)]
+            local wallX = cell.x + nextCell.dir.dx / 2
+            local wallY = cell.y + nextCell.dir.dy / 2
+
+
+            maze[wallY][wallX] = 0
+            maze[nextCell.y][nextCell.x] = 0
+
+            table.insert(stack, {x = nextCell.x, y = nextCell.y})
+        else
+            table.remove(stack)
+        end
+    end
+
+
     maze[1][1] = 0
     maze[rows][cols] = 0
+
     return maze
 end
 
