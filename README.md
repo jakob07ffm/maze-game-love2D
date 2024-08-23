@@ -14,4 +14,4 @@ This is a simple maze game built with LOVE2D. The game generates a random maze t
 - open the main.lua file with a code editor
 - run the main.lua file in the code editor
 
-![](maze_screenshot)
+![](maze_screenshot.JPG)
